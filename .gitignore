@@ -1,0 +1,33 @@
+# Бинарные файлы
+*.exe
+*.out
+*.o
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+
+# Игнорируем временные файлы и кеш
+*.log
+*.swp
+*.swo
+
+# IDE и редакторы
+.vscode/
+.idea/
+*.iml
+
+# Golang
+/bin/
+/pkg/
+/vendor/
+
+# Модули Go
+go.sum
+go.mod
+
+# Переменные окружения
+.env
+.env.local
+.env.production
+.env.development
