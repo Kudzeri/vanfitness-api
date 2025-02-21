@@ -10,6 +10,8 @@ func main() {
 	config.LoadEnv()
 	config.ConnectDB()
 	r := gin.Default()
-	routes.SetupRoutes(r)
+	api := r.Group("/api")
+	routes.SetupAuthRoutes(api)
+
 	r.Run(":8080")
 }
