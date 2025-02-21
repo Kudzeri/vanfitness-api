@@ -9,7 +9,11 @@ import (
 func main() {
 	config.LoadEnv()
 	config.ConnectDB()
+
 	r := gin.Default()
+
+	r.Use(config.SetupCORS())
+
 	api := r.Group("/api")
 	routes.SetupAuthRoutes(api)
 
