@@ -16,6 +16,7 @@ func main() {
 
 	api := r.Group("/api")
 	routes.SetupAuthRoutes(api)
+	routes.SetupProfileRoutes(api)
 
 	r.Run(":8080")
 }

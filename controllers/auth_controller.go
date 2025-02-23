@@ -1,15 +1,15 @@
 package controllers
 
 import (
+	"context"
 	"github.com/Kudzeri/vanfitness-api/config"
 	"github.com/Kudzeri/vanfitness-api/models"
 	"github.com/Kudzeri/vanfitness-api/utils"
-	"context"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(c *gin.Context) {
