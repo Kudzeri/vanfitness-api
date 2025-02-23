@@ -7,7 +7,10 @@ import (
 )
 
 func SetupProfileRoutes(r *gin.RouterGroup) {
-	auth := r.Group("/profile")
+	profile := r.Group("/profile")
 
-	auth.GET("/create", middleware.AuthMiddleware(), controllers.MakeProfile)
+	profile.POST("/create", middleware.AuthMiddleware(), controllers.MakeProfile)
+	profile.GET("/get", middleware.AuthMiddleware(), controllers.GetProfile)
+	profile.PUT("/update",middleware.AuthMiddleware(),  controllers.UpdateProfile)
+
 }
