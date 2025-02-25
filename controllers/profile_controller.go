@@ -34,7 +34,10 @@ func MakeProfile(c *gin.Context) {
 		return
 	}
 
+	profile.Prefix = "Fresh Boy"
+	profile.Level = "1"
 	profile.UserID = user.ID
+
 	if err := repositories.CreateProfile(ctx, profile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -42,6 +45,7 @@ func MakeProfile(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{"message": "Profile created successfully"})
 }
+
 
 func GetProfile(c *gin.Context) {
 	username, exists := c.Get("username")
@@ -92,7 +96,7 @@ func UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	updatedProfile.UserID = user.ID // Сохраняем связь с пользователем
+	updatedProfile.UserID = user.ID
 
 	if err := repositories.UpdateProfile(ctx, user.ID, updatedProfile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
