@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Создание профиля
 func MakeProfile(c *gin.Context) {
 	username, exists := c.Get("username")
 	if !exists {
@@ -34,6 +35,7 @@ func MakeProfile(c *gin.Context) {
 		return
 	}
 
+	// Установка дефолтных значений
 	profile.Prefix = "Fresh Boy"
 	profile.Level = "1"
 	profile.UserID = user.ID
@@ -46,7 +48,7 @@ func MakeProfile(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"message": "Profile created successfully"})
 }
 
-
+// Получение профиля
 func GetProfile(c *gin.Context) {
 	username, exists := c.Get("username")
 	if !exists {
@@ -70,6 +72,7 @@ func GetProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, profile)
 }
 
+// Обновление профиля
 func UpdateProfile(c *gin.Context) {
 	username, exists := c.Get("username")
 	if !exists {
@@ -84,19 +87,28 @@ func UpdateProfile(c *gin.Context) {
 		return
 	}
 
-	_, err = repositories.GetProfileByUserID(ctx, user.ID)
+	// Получаем текущий профиль
+	currentProfile, err := repositories.GetProfileByUserID(ctx, user.ID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Profile not found"})
 		return
 	}
 
-	var updatedProfile models.Profile
-	if err := c.ShouldBindJSON(&updatedProfile); err != nil {
+	// Декодируем входящие данные
+	var inputProfile models.Profile
+	if err := c.ShouldBindJSON(&inputProfile); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
 
-	updatedProfile.UserID = user.ID
+	// Обновляем только переданные параметры, оставляя остальные без изменений
+	updatedProfile := models.Profile{
+		UserID: user.ID,
+		Height: ifEmpty(inputProfile.Height, currentProfile.Height),
+		Weight: ifEmpty(inputProfile.Weight, currentProfile.Weight),
+		Age:    ifEmpty(inputProfile.Age, currentProfile.Age),
+		Sex:    ifEmpty(inputProfile.Sex, currentProfile.Sex),
+	}
 
 	if err := repositories.UpdateProfile(ctx, user.ID, updatedProfile); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -106,4 +118,10 @@ func UpdateProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Profile updated successfully"})
 }
 
-
+// Функция для проверки пустых строк
+func ifEmpty(newValue, oldValue string) string {
+	if newValue == "" {
+		return oldValue
+	}
+	return newValue
+}
