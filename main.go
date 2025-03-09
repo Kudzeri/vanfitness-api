@@ -18,6 +18,7 @@ func main() {
 	routes.SetupAuthRoutes(api)
 	routes.SetupProfileRoutes(api)
 	routes.SetupUserRoutes(api)
+	routes.SetupPostRoutes(api)
 
 	r.Run(":8080")
 }
