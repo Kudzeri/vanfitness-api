@@ -11,6 +11,7 @@ import (
 
 var UserCollection *mongo.Collection
 var ProfileCollection *mongo.Collection
+var PostCollection *mongo.Collection
 
 func ConnectDB() {
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_URI")))
@@ -19,4 +20,5 @@ func ConnectDB() {
 	}
 	UserCollection = client.Database(os.Getenv("DATABASE_NAME")).Collection("users")
 	ProfileCollection = client.Database(os.Getenv("DATABASE_NAME")).Collection("profiles")
+	PostCollection = client.Database(os.Getenv("DATABASE_NAME")).Collection("posts")
 }
