@@ -10,12 +10,14 @@ var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 type Claims struct {
 	Username string `json:"username"`
+	UserID   string `json:"user_id"`
 	jwt.StandardClaims
 }
 
-func GenerateJWT(username string) string {
+func GenerateJWT(username, userID string) string {
 	claims := &Claims{
 		Username: username,
+		UserID:   userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 		},
@@ -25,15 +27,16 @@ func GenerateJWT(username string) string {
 	return tokenString
 }
 
-func ValidateJWT(tokenString string) (string, error) {
+func ValidateJWT(tokenString string) (string, string, error) {
 	claims := &Claims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
 
 	if err != nil || !token.Valid {
-		return "", err
+		return "", "", err
 	}
 
-	return claims.Username, nil
+	return claims.Username, claims.UserID, nil
 }
+
