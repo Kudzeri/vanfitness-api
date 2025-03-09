@@ -2,10 +2,11 @@ package controllers
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/Kudzeri/vanfitness-api/config"
 	"github.com/Kudzeri/vanfitness-api/models"
 	"github.com/Kudzeri/vanfitness-api/utils"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
@@ -34,11 +35,14 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
 		return
 	}
+
 	var user models.User
 	err := config.UserCollection.FindOne(context.TODO(), bson.M{"username": input.Username}).Decode(&user)
 	if err != nil || bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(input.Password)) != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid username or password"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"token": utils.GenerateJWT(user.Username)})
+
+	token := utils.GenerateJWT(user.Username, user.ID)
+	c.JSON(http.StatusOK, gin.H{"token": token})
 }
